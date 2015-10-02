@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<title>Vis</title>
+
+<head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+    html,
+    body,
+    #map-canvas {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvQW0hONU01G0pfrJZ1nZRZuulSY4rG2I&libraries=places"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class=".embed-responsive-item" id="map-canvas"></div>
+
+<script>
+  d3.csv("CityEvents.csv", function(error, data) {
+
+  });
+
+  function initialize() {
+      var mapOptions = {
+        zoom: 12,
+        center: {lat: 55.874918, lng: -4.248938}
+      }
+      map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+      infowindow = new google.maps.InfoWindow();
+
+
+    }
+ initialize();
+</script>
+</body>
