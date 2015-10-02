@@ -24,6 +24,7 @@
   <div class=".embed-responsive-item" id="map-canvas"></div>
 
 <script>
+<<<<<<< HEAD
   d3.csv("CityEvents.csv", function(error, data) {
 
   });
@@ -49,5 +50,40 @@
 
     }
  initialize();
+=======
+var map;
+var marker;
+  d3.csv("CityEvents.csv", function(error, data) {
+    function initialize() {
+        var mapOptions = {
+          zoom: 7,
+          center: {lat: 55.874918, lng: -4.248938}
+        }
+        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+        infowindow = new google.maps.InfoWindow();
+        myLatLng = {lat: 55.0, lng:-3.8641787142715835};
+        marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          animation: google.maps.Animation.DROP
+        });
+      }
+
+
+    function addMarker(myLatLng){
+      marker.setPosition(myLatLng);
+    }
+   initialize();
+
+
+   for (var i=0; i<data.length; i++){
+        var myLatLng = {lat: parseFloat(data[i].lat), lng:parseFloat(data[i].lon)};
+        window.setTimeout(addMarker(myLatLng),5000);
+    }
+
+  });
+
+>>>>>>> 38d75e9431a4b7ffaafcce1fa7a8e9d21e175155
 </script>
 </body>
