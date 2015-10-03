@@ -24,6 +24,18 @@
   <div class=".embed-responsive-item" id="map-canvas"></div>
 
 <script>
+var vhighPri = {events:['Demostration', 'Fraud', 'Murder', 'Mugging'],
+                ratio : 5
+                };
+var highPri = {events: ['Mugging', 'Picket'],
+               ratio: 10
+               };
+var mediumPri = {events: ['Athletics', 'Football', 'Speech'],
+                 ratio: 20
+                };
+var lowPri = {events: ['Charity', 'Concert', 'March', 'Run', 'River'],
+              ratio: 40
+             };
 
 var map;
 var marker;
@@ -35,19 +47,22 @@ var marker;
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
-        infowindow = new google.maps.InfoWindow();
         var myLatLng = new google.maps.LatLng(55.0, -3.8641787142715835);
         marker = new google.maps.Marker({
           position: myLatLng,
           map: map,
           animation: google.maps.Animation.DROP
         });
+      marker.info = new google.maps.InfoWindow({
+        content: "<p>Available staff: 1000 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
+      });
       }
 
 
     function addMarker(LatLng){
       marker.setPosition(LatLng);
       marker.setIcon('high.png');
+      marker.info.open(map,marker);
     }
    initialize();
 
