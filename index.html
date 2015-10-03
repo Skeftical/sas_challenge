@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js\jquery-2.1.4.js"></script>
 <title>Vis</title>
 
 <head>
@@ -41,7 +42,7 @@ var lowPri = {events: ['Charity', 'Concert', 'March', 'Run', 'River'],
 var map;
 var markers = [];
 var marker_counter=0;
-var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' + '<p>Staff required: 10 </p>';
+var cont = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' + '<p>Staff required: 10 </p>';
 
   d3.csv("CityEvents.csv", function(error, data) {
     function initialize() {
@@ -52,7 +53,7 @@ var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' 
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
 
-        infowindow = new google.maps.InfoWindow();
+        var info = new google.maps.InfoWindow();
         var MAX_EVENTS = 7;
         for (var i=0; i<MAX_EVENTS; i++){
           markers[i] = new google.maps.Marker({
@@ -70,6 +71,9 @@ var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' 
       }
       markers[marker_counter].setPosition(LatLng);
       markers[marker_counter].setIcon('low.png');
+      markers[marker_counter].addListener('click',function(){
+          info.open(map,markers[marker_counter]);
+      });
       marker_counter++;
     }
    initialize();
@@ -79,10 +83,7 @@ var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' 
     var LatLng1 = new google.maps.LatLng(parseFloat(data[i++].lat),parseFloat(data[i++].lon));
     addMarker(LatLng1);
   },2000);
-    google.maps.event.addListener(markers[marker_counter],'mouseover',function(){
-       infowindow.setContent(content);
-       infowindow.open(map,markers[marker_counter]);
-   });
   });
 </script>
+  <div class=".col-md-4"></div>
 </body>
