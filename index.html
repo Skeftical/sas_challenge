@@ -111,7 +111,7 @@ var police_on_events=[0,0,0,0,0,0,0];
         $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
     }
 
-    function addMarker(LatLng,eventClass){
+    function addMarker(LatLng,eventClass,dataRow){
       if (marker_counter == 7){
         marker_counter = 0;
       }
@@ -129,10 +129,22 @@ var police_on_events=[0,0,0,0,0,0,0];
       markers[marker_counter].setPosition(LatLng);
       markers[marker_counter].setIcon(icon);
       //Calculate how much police force is needed
-      var allocated_staff = Math.floor(police_force_available / POLICE_FORCE * eventClass.ratio);
+      var allocated_staff = Math.round((police_force_available / POLICE_FORCE) * (dataRow.people/eventClass.ratio));
+      console.log("EVENT : "+dataRow.people);
+      console.log("1st "+ police_force_available/POLICE_FORCE);
+      console.log("2nd "+dataRow.people/eventClass.ratio);
+      console.log("PERCENTAGE : "+allocated_staff);
+      if (allocated_staff > police_force_available){
+        switch (eventClass.priority){
+          case VHIGH : allocated_staff = police_force_available; break;
+          case HIGH : allocated_staff = police_force_available * 0.75; break;
+          case MEDIUM : allocated_staff = police_force_available * 0.5; break;
+          case LOW : allocated_staff = police_force_available * 0.25; break;
+        }
+      }
       //If allocated staff is more than the force needed send remaining staff
-      if (allocated_staff == 0 && police_force_available > 0){
-        allocated_staff = police_force_available;
+      if (allocated_staff == 0 && police_force_available >=2){
+        allocated_staff = 2;
       }
       police_on_events[marker_counter]=allocated_staff;
       police_force_available -= allocated_staff;
@@ -149,9 +161,8 @@ var police_on_events=[0,0,0,0,0,0,0];
   setInterval(function(){
     var LatLng1 = new google.maps.LatLng(parseFloat(data[i].lat),parseFloat(data[i].lon));
     var eventClass = eventsObj[data[i].crime];
-    console.log(eventClass);
     i++;
-    addMarker(LatLng1,eventClass);
+    addMarker(LatLng1,eventClass,data[i]);
   },2000);
 
   });
