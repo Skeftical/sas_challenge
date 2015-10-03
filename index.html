@@ -24,33 +24,7 @@
   <div class=".embed-responsive-item" id="map-canvas"></div>
 
 <script>
-<<<<<<< HEAD
-  d3.csv("CityEvents.csv", function(error, data) {
 
-  });
-
-  function initialize() {
-      var mapOptions = {
-        zoom: 12,
-        center: {lat: 55.874918, lng: -4.248938}
-      };
-      var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
-      var marker = new google.maps.Marker({
-        position: mapOptions.center,
-        map: map,
-        icon: 'high.png'
-      });
-
-      marker.info = new google.maps.InfoWindow({
-          content: "Sandra"
-      });
-
-      marker.info.open(map,marker);
-
-    }
- initialize();
-=======
 var map;
 var marker;
   d3.csv("CityEvents.csv", function(error, data) {
@@ -73,6 +47,7 @@ var marker;
 
     function addMarker(LatLng){
       marker.setPosition(LatLng);
+      marker.setIcon('high.png');
     }
    initialize();
 
@@ -86,6 +61,5 @@ var marker;
 
   });
 
->>>>>>> 38d75e9431a4b7ffaafcce1fa7a8e9d21e175155
 </script>
 </body>
