@@ -35,7 +35,7 @@ var marker;
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
         infowindow = new google.maps.InfoWindow();
-        myLatLng = {lat: 55.0, lng:-3.8641787142715835};
+        var myLatLng = new google.maps.LatLng(55.0, -3.8641787142715835);
         marker = new google.maps.Marker({
           position: myLatLng,
           map: map,
@@ -44,16 +44,18 @@ var marker;
       }
 
 
-    function addMarker(myLatLng){
-      marker.setPosition(myLatLng);
+    function addMarker(LatLng){
+      marker.setPosition(LatLng);
     }
    initialize();
 
+  // window.setInterval(addMarker(new google.maps.LatLng(55.950686, -3.177970),2000));
+  var i=-1;
+  setInterval(function(){
+    var LatLng1 = new google.maps.LatLng(parseFloat(data[i++].lat),parseFloat(data[i++].lon));
+    addMarker(LatLng1);
+  },2000);
 
-   for (var i=0; i<data.length; i++){
-        var myLatLng = {lat: parseFloat(data[i].lat), lng:parseFloat(data[i].lon)};
-        window.setTimeout(addMarker(myLatLng),5000);
-    }
 
   });
 
