@@ -84,9 +84,6 @@ var marker_counter=0;
 var police_force_available = 200;
 var police_on_events=[0,0,0,0,0,0,0];
 
-var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' + '<p>Staff required: 10 </p>';
-
-
   d3.csv("CityEvents.csv", function(error, data) {
     function initialize() {
         var mapOptions = {
