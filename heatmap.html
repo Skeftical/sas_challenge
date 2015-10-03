@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Heatmaps</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+#floating-panel {
+  position: absolute;
+  top: 10px;
+  left: 25%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+      #floating-panel {
+        background-color: #fff;
+        border: 1px solid #999;
+        left: 25%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        z-index: 5;
+      }
+    </style>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="floating-panel">
+      <button onclick="toggleHeatmap(1)">Very High Crimes</button>
+      <button onclick="toggleHeatmap(2)">High Crimes</button>
+      <button onclick="toggleHeatmap(3)">Medium Crimes</button>
+      <button onclick="toggleHeatmap(4)">Low Crimes</button>
+      <button onclick="changeGradient()">Change gradient</button>
+      <button onclick="changeRadius()">Change radius</button>
+      <button onclick="changeOpacity()">Change opacity</button>
+
+    </div>
+
+    <div id="map"></div>
+    <script>
+    var VHIGH = 1;
+    var HIGH = 2;
+    var MEDIUM = 3;
+    var LOW = 4;
+    var eventsObj = {
+      "DEMONSTRATION":{priority: VHIGH,   ratio : 5},
+      "FRAUD":{priority: VHIGH,  ratio : 5},
+      "ROBBERY":{priority: VHIGH,  ratio : 5},
+      "MUGGING":{priority: VHIGH,  ratio : 5},
+      "MURDER":{priority: HIGH,  ratio : 10},
+      "PICKET":{priority: HIGH,  ratio : 10},
+      "ATHLETICS":{priority: MEDIUM,  ratio : 20},
+      "FOOTBALL":{priority: MEDIUM,  ratio : 20},
+      "SPEECH":{priority: MEDIUM,  ratio : 20},
+      "CHARITY":{priority: LOW , ratio : 40},
+      "CONCERT":{priority: LOW , ratio : 40},
+      "MARCH":{priority: LOW , ratio : 40},
+      "RACE":{priority: LOW , ratio : 40},
+      "RIVER":{priority: LOW,  ratio : 40}
+    };
+var map, heatmap;
+var low_crimes=[];
+var vhigh_crimes=[];
+var high_crimes=[];
+var medium_crimes=[];
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 7,
+    center: {lat: 55.874918, lng: -4.248938},
+    mapTypeId: google.maps.MapTypeId.SATELLITE
+  });
+
+  heatmap = new google.maps.visualization.HeatmapLayer({
+    map: map
+  });
+
+  d3.csv("CityEvents.csv", function(error, data) {
+
+      low_crimes=data.filter(function(d){
+        return eventsObj[d.crime].priority == LOW;
+      }).map(function(d){
+        return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
+      });
+      vhigh_crimes=data.filter(function(d){
+        return eventsObj[d.crime].priority == VHIGH;
+      }).map(function(d){
+        return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
+      });
+      high_crimes=data.filter(function(d){
+        return eventsObj[d.crime].priority == HIGH;
+      }).map(function(d){
+        return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
+      });
+      medium_crimes=data.filter(function(d){
+        return eventsObj[d.crime].priority == MEDIUM;
+      }).map(function(d){
+        return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
+      });
+      heatmap.setData(vhigh_crimes);
+    });
+}
+
+function toggleHeatmap(num) {
+  //heatmap.setMap(heatmap.getMap() ? null : map);
+  switch (num){
+    case 1:   heatmap.setData(vhigh_crimes);break;
+    case 2:   heatmap.setData(high_crimes);break;
+    case 3:   heatmap.setData(medium_crimes);break;
+    case 4:   heatmap.setData(low_crimes);break;
+  }  
+}
+
+function changeGradient() {
+  var gradient = [
+    'rgba(0, 255, 255, 0)',
+    'rgba(0, 255, 255, 1)',
+    'rgba(0, 191, 255, 1)',
+    'rgba(0, 127, 255, 1)',
+    'rgba(0, 63, 255, 1)',
+    'rgba(0, 0, 255, 1)',
+    'rgba(0, 0, 223, 1)',
+    'rgba(0, 0, 191, 1)',
+    'rgba(0, 0, 159, 1)',
+    'rgba(0, 0, 127, 1)',
+    'rgba(63, 0, 91, 1)',
+    'rgba(127, 0, 63, 1)',
+    'rgba(191, 0, 31, 1)',
+    'rgba(255, 0, 0, 1)'
+  ]
+  heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+}
+
+function changeRadius() {
+  heatmap.set('radius', heatmap.get('radius') ? null : 20);
+}
+
+function changeOpacity() {
+  heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+}
+
+// Heatmap data: 500 Points
+
+
+
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvQW0hONU01G0pfrJZ1nZRZuulSY4rG2I&signed_in=true&libraries=visualization&callback=initMap">
+    </script>
+  </body>
+</html>
