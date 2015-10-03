@@ -24,6 +24,22 @@
   <div class=".embed-responsive-item" id="map-canvas"></div>
 
 <script>
+<<<<<<< HEAD
+=======
+var vhighPri = {events:['Demostration', 'Fraud', 'Murder', 'Mugging'],
+                ratio : 5
+                };
+var highPri = {events: ['Mugging', 'Picket'],
+               ratio: 10
+               };
+var mediumPri = {events: ['Athletics', 'Football', 'Speech'],
+                 ratio: 20
+                };
+var lowPri = {events: ['Charity', 'Concert', 'March', 'Run', 'River'],
+              ratio: 40
+             };
+
+>>>>>>> 7e88d4b5a531bdd28cebdfcd6990ee587abda589
 var map;
 var markers = [];
 var marker_counter=0;
@@ -35,6 +51,7 @@ var marker_counter=0;
         }
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
+
         infowindow = new google.maps.InfoWindow();
         var MAX_EVENTS = 7;
         for (var i=0; i<MAX_EVENTS; i++){
@@ -43,6 +60,9 @@ var marker_counter=0;
             animation: google.maps.Animation.DROP
           });
         }
+      marker.info = new google.maps.InfoWindow({
+        content: "<p>Available staff: 1000 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
+      });
 
       }
 
@@ -53,6 +73,7 @@ var marker_counter=0;
       }
       markers[marker_counter].setPosition(LatLng);
       markers[marker_counter].setIcon('high.png');
+      markers[marker_counter].info.open(map,marker);
       marker_counter++;
     }
    initialize();
