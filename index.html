@@ -24,8 +24,7 @@
   <div class=".embed-responsive-item" id="map-canvas"></div>
 
 <script>
-<<<<<<< HEAD
-=======
+
 var vhighPri = {events:['Demostration', 'Fraud', 'Murder', 'Mugging'],
                 ratio : 5
                 };
@@ -39,7 +38,6 @@ var lowPri = {events: ['Charity', 'Concert', 'March', 'Run', 'River'],
               ratio: 40
              };
 
->>>>>>> 7e88d4b5a531bdd28cebdfcd6990ee587abda589
 var map;
 var markers = [];
 var marker_counter=0;
@@ -59,10 +57,11 @@ var marker_counter=0;
             map: map,
             animation: google.maps.Animation.DROP
           });
+          markers[i].info = new google.maps.InfoWindow({
+            content: "<p>Available staff: 1000 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
+          });
         }
-      marker.info = new google.maps.InfoWindow({
-        content: "<p>Available staff: 1000 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
-      });
+
 
       }
 
@@ -73,12 +72,11 @@ var marker_counter=0;
       }
       markers[marker_counter].setPosition(LatLng);
       markers[marker_counter].setIcon('high.png');
-      markers[marker_counter].info.open(map,marker);
+      markers[marker_counter].info.open(map,markers[marker_counter]);
       marker_counter++;
     }
    initialize();
 
-  // window.setInterval(addMarker(new google.maps.LatLng(55.950686, -3.177970),2000));
   var i=-1;
   setInterval(function(){
     var LatLng1 = new google.maps.LatLng(parseFloat(data[i++].lat),parseFloat(data[i++].lon));
