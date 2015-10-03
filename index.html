@@ -25,7 +25,8 @@
 
 <script>
 var map;
-var marker;
+var markers = [];
+var marker_counter=0;
   d3.csv("CityEvents.csv", function(error, data) {
     function initialize() {
         var mapOptions = {
@@ -35,18 +36,24 @@ var marker;
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
         infowindow = new google.maps.InfoWindow();
-        var myLatLng = new google.maps.LatLng(55.0, -3.8641787142715835);
-        marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          animation: google.maps.Animation.DROP
-        });
+        var MAX_EVENTS = 7;
+        for (var i=0; i<MAX_EVENTS; i++){
+          markers[i] = new google.maps.Marker({
+            map: map,
+            animation: google.maps.Animation.DROP
+          });
+        }
+
       }
 
 
     function addMarker(LatLng){
-      marker.setPosition(LatLng);
-      marker.setIcon('high.png');
+      if (marker_counter == 7){
+        marker_counter = 0;
+      }
+      markers[marker_counter].setPosition(LatLng);
+      markers[marker_counter].setIcon('high.png');
+      marker_counter++;
     }
    initialize();
 
