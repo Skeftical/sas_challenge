@@ -30,6 +30,11 @@
   font-family: 'Roboto','sans-serif';
   line-height: 30px;
   padding-left: 10px;
+  width: 30%;
+}
+.list-group-item {
+  font-family: 'Roboto','sans-serif';
+  line-height: 20px;
 }
 
   </style>
@@ -38,19 +43,25 @@
 </head>
 
 <body>
-  <div id ="floating-panel"></div>
+  <div id ="floating-panel">
+    <div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+    200/200
+  </div>
+</div>
+  </div>
 <div id="map-canvas"></div>
 <div class="container-fluid">
 
-<div class=".col-xs-8 .col-md-8">
+<div id="r" class=".col-xs-8 .col-md-8">
   <ul class="list-group">
-    <li class="list-group-item">Cras justo odio</li>
-    <li class="list-group-item">Dapibus ac facilisis in</li>
-    <li class="list-group-item">Morbi leo risus</li>
-    <li class="list-group-item">Porta ac consectetur ac</li>
-    <li class="list-group-item">Vestibulum at eros</li>
-    <li class="list-group-item">Porta ac consectetur ac</li>
-    <li class="list-group-item">Vestibulum at eros</li>
+    <li id="0" class="list-group-item"></li>
+    <li id="1" class="list-group-item"></li>
+    <li id="2" class="list-group-item"></li>
+    <li id="3" class="list-group-item"></li>
+    <li id="4" class="list-group-item"></li>
+    <li id="5" class="list-group-item"></li>
+    <li id="6" class="list-group-item"></li>
   </ul>
   </div>
 </div>
@@ -103,28 +114,24 @@ var police_on_events=[0,0,0,0,0,0,0];
             map: map,
             animation: google.maps.Animation.DROP
           });
-          markers[i].info = new google.maps.InfoWindow({
-            content: "<p>Available staff: 100 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
-          });
         }
 
-        $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
+      //  $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
     }
 
+
     function addMarker(LatLng,eventClass,dataRow){
-      if (marker_counter == 7){
-        marker_counter = 0;
-      }
+
       if (police_on_events[marker_counter] >0){
         police_force_available+=police_on_events[marker_counter];
         police_on_events[marker_counter] = 0;
       }
       var icon;
       switch (eventClass.priority){
-        case 1: icon = 'vhigh.png'; break;
-        case 2: icon = 'high.png'; break;
-        case 3: icon = 'medium.png';break;
-        case 4: icon = 'low.png';break;
+        case 1: icon = 'vhigh_danger.png'; break;
+        case 2: icon = 'high_danger.png'; break;
+        case 3: icon = 'mid_danger.png';break;
+        case 4: icon = 'low_danger.png';break;
       }
       markers[marker_counter].setPosition(LatLng);
       markers[marker_counter].setIcon(icon);
@@ -151,9 +158,14 @@ var police_on_events=[0,0,0,0,0,0,0];
       police_force_available -= allocated_staff;
       console.log("Allocated this number of staff :"+allocated_staff);
       console.log(police_on_events);
-      $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
+      $(".progress-bar").attr("aria-valuenow",police_force_available/2);
+      $(".progress-bar").css('width',police_force_available/2+'%');
+      $(".progress-bar").text(police_force_available+"/200");
 
       marker_counter++;
+      if (marker_counter == 7){
+        marker_counter = 0;
+      }
     }
    initialize();
 
@@ -161,6 +173,37 @@ var police_on_events=[0,0,0,0,0,0,0];
   setInterval(function(){
     var LatLng1 = new google.maps.LatLng(parseFloat(data[i].lat),parseFloat(data[i].lon));
     var eventClass = eventsObj[data[i].crime];
+
+    console.log(eventClass);
+    $(document).ready(function(){
+      $(".list-group-item").each(function(){
+          var id = parseInt($(this).attr('id'));
+          var pri = '';
+          if (id==marker_counter) {
+            switch (eventsObj[data[i].crime].priority){
+              case 1: pri = 'Very High'; break;
+              case 2: pri = 'High'; break;
+              case 3: pri = 'Medium'; break;
+              case 4: pri = 'Low'; break;
+            }
+            $("#" + id).html("<b>Type of incident : </b>"+data[i].crime + "  - <b>Number of people affected : </b>" + data[i].people + " - <b>Level of risk : </b>" + pri);
+                switch (eventClass.priority) {
+                  case 1:
+                $("#"+id).prepend('<img src="vhigh_danger.png"/>');
+                break;
+              case 2:
+                $("#"+id).prepend('<img src="high_danger.png"/>');
+                break;
+              case 3:
+                $("#"+id).prepend('<img src="mid_danger.png"/>');
+                break;
+              case 4:
+                $("#"+id).prepend('<img src="low_danger.png"/>');
+                break;
+            }
+          }
+      });
+    });
     i++;
     addMarker(LatLng1,eventClass,data[i]);
   },2000);
