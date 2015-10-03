@@ -8,12 +8,14 @@
   <script src="js/bootstrap.min.js"></script>
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <style type="text/css">
-    html,
-    body,
+  html, body {
+    height: 100%;
+  }
     #map-canvas {
-      height: 100%;
       margin: 0;
       padding: 0;
+      height: 75%;
+
     }
     #floating-panel {
   position: absolute;
@@ -35,19 +37,21 @@
 </head>
 
 <body>
-
-  <div class=".col-md-8">
   <div id ="floating-panel"></div>
-  <div class=".embed-responsive-item" id="map-canvas"></div>
-</div>
-<div class=".col-md-4">
-<ul class="list-group">
-  <li class="list-group-item">Cras justo odio</li>
-  <li class="list-group-item">Dapibus ac facilisis in</li>
-  <li class="list-group-item">Morbi leo risus</li>
-  <li class="list-group-item">Porta ac consectetur ac</li>
-  <li class="list-group-item">Vestibulum at eros</li>
-</ul>
+<div id="map-canvas"></div>
+<div class="container-fluid">
+
+<div class=".col-xs-8 .col-md-8">
+  <ul class="list-group">
+    <li class="list-group-item">Cras justo odio</li>
+    <li class="list-group-item">Dapibus ac facilisis in</li>
+    <li class="list-group-item">Morbi leo risus</li>
+    <li class="list-group-item">Porta ac consectetur ac</li>
+    <li class="list-group-item">Vestibulum at eros</li>
+    <li class="list-group-item">Porta ac consectetur ac</li>
+    <li class="list-group-item">Vestibulum at eros</li>
+  </ul>
+  </div>
 </div>
 <script>
 var VHIGH = 1;
@@ -149,10 +153,7 @@ var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' 
     i++;
     addMarker(LatLng1,eventClass);
   },2000);
-    google.maps.event.addListener(markers[marker_counter],'mouseover',function(){
-       infowindow.setContent(content);
-       infowindow.open(map,markers[marker_counter]);
-   });
+
   });
 </script>
 </body>
