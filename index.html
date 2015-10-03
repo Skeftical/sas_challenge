@@ -129,17 +129,17 @@ var police_on_events=[0,0,0,0,0,0,0];
       markers[marker_counter].setPosition(LatLng);
       markers[marker_counter].setIcon(icon);
       //Calculate how much police force is needed
-      var allocated_staff = Math.round((police_force_available / POLICE_FORCE) * (dataRow.people/eventClass.ratio));
+      var allocated_staff = Math.floor((police_force_available / POLICE_FORCE) * (dataRow.people/eventClass.ratio));
       console.log("EVENT : "+dataRow.people);
       console.log("1st "+ police_force_available/POLICE_FORCE);
       console.log("2nd "+dataRow.people/eventClass.ratio);
       console.log("PERCENTAGE : "+allocated_staff);
       if (allocated_staff > police_force_available){
         switch (eventClass.priority){
-          case VHIGH : allocated_staff = police_force_available; break;
-          case HIGH : allocated_staff = police_force_available * 0.75; break;
-          case MEDIUM : allocated_staff = police_force_available * 0.5; break;
-          case LOW : allocated_staff = police_force_available * 0.25; break;
+          case VHIGH : allocated_staff = Math.floor(police_force_available); break;
+          case HIGH : allocated_staff = Math.floor(police_force_available * 0.75); break;
+          case MEDIUM : allocated_staff = Math.floor(police_force_available * 0.5); break;
+          case LOW : allocated_staff = Math.floor(police_force_available * 0.25); break;
         }
       }
       //If allocated staff is more than the force needed send remaining staff
@@ -147,9 +147,9 @@ var police_on_events=[0,0,0,0,0,0,0];
         allocated_staff = 2;
       }
       police_on_events[marker_counter]=allocated_staff;
+      console.log("Police force available: "+police_force_available);
       police_force_available -= allocated_staff;
-      console.log(allocated_staff);
-      console.log("police force available:" +police_force_available);
+      console.log("Allocated this number of staff :"+allocated_staff);
       console.log(police_on_events);
       $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
 
