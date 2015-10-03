@@ -16,33 +16,77 @@
       margin: 0;
       padding: 0;
     }
+    #floating-panel {
+  position: absolute;
+  top: 10px;
+  left: 25%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+
   </style>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvQW0hONU01G0pfrJZ1nZRZuulSY4rG2I&libraries=places"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 
 <body>
+
+  <div class=".col-md-8">
+  <div id ="floating-panel"></div>
   <div class=".embed-responsive-item" id="map-canvas"></div>
-
+</div>
+<div class=".col-md-4">
+<ul class="list-group">
+  <li class="list-group-item">Cras justo odio</li>
+  <li class="list-group-item">Dapibus ac facilisis in</li>
+  <li class="list-group-item">Morbi leo risus</li>
+  <li class="list-group-item">Porta ac consectetur ac</li>
+  <li class="list-group-item">Vestibulum at eros</li>
+</ul>
+</div>
 <script>
+var VHIGH = 1;
+var HIGH = 2;
+var MEDIUM = 3;
+var LOW = 4;
+var POLICE_FORCE = 200;
+var eventsObj = {
+  "DEMONSTRATION":{priority: VHIGH,   ratio : 5},
+  "FRAUD":{priority: VHIGH,  ratio : 5},
+  "ROBBERY":{priority: VHIGH,  ratio : 5},
+  "MUGGING":{priority: VHIGH,  ratio : 5},
+  "MURDER":{priority: HIGH,  ratio : 10},
+  "PICKET":{priority: HIGH,  ratio : 10},
+  "ATHLETICS":{priority: MEDIUM,  ratio : 20},
+  "FOOTBALL":{priority: MEDIUM,  ratio : 20},
+  "SPEECH":{priority: MEDIUM,  ratio : 20},
+  "CHARITY":{priority: LOW , ratio : 40},
+  "CONCERT":{priority: LOW , ratio : 40},
+  "MARCH":{priority: LOW , ratio : 40},
+  "RACE":{priority: LOW , ratio : 40},
+  "RIVER":{priority: LOW,  ratio : 40}
+};
 
-var vhighPri = {events:['Demostration', 'Fraud', 'Murder', 'Mugging'],
-                ratio : 5
-                };
-var highPri = {events: ['Mugging', 'Picket'],
-               ratio: 10
-               };
-var mediumPri = {events: ['Athletics', 'Football', 'Speech'],
-                 ratio: 20
-                };
-var lowPri = {events: ['Charity', 'Concert', 'March', 'Run', 'River'],
-              ratio: 40
-             };
 
 var map;
 var markers = [];
 var marker_counter=0;
+<<<<<<< HEAD
 var cont = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' + '<p>Staff required: 10 </p>';
+=======
+
+var police_force_available = 200;
+var police_on_events=[0,0,0,0,0,0,0];
+
+var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' + '<p>Staff required: 10 </p>';
+>>>>>>> ddcd61936c80f9abb112010bf5c39f273e968fa6
+
 
   d3.csv("CityEvents.csv", function(error, data) {
     function initialize() {
@@ -60,28 +104,67 @@ var cont = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' + '
             map: map,
             animation: google.maps.Animation.DROP
           });
+<<<<<<< HEAD
         }
 
+=======
+          markers[i].info = new google.maps.InfoWindow({
+            content: "<p>Available staff: 100 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
+          });
+        }
+>>>>>>> ddcd61936c80f9abb112010bf5c39f273e968fa6
 
+        $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
     }
 
-    function addMarker(LatLng){
+    function addMarker(LatLng,eventClass){
       if (marker_counter == 7){
         marker_counter = 0;
       }
+      if (police_on_events[marker_counter] >0){
+        police_force_available+=police_on_events[marker_counter];
+        police_on_events[marker_counter] = 0;
+      }
+      var icon;
+      switch (eventClass.priority){
+        case 1: icon = 'vhigh.png'; break;
+        case 2: icon = 'high.png'; break;
+        case 3: icon = 'medium.png';break;
+        case 4: icon = 'low.png';break;
+      }
       markers[marker_counter].setPosition(LatLng);
+<<<<<<< HEAD
       markers[marker_counter].setIcon('low.png');
       markers[marker_counter].addListener('click',function(){
           info.open(map,markers[marker_counter]);
       });
+=======
+
+      markers[marker_counter].setIcon(icon);
+      //Calculate how much police force is needed
+      var allocated_staff = Math.floor(police_force_available / POLICE_FORCE * eventClass.ratio);
+      //If allocated staff is more than the force needed send remaining staff
+      if (allocated_staff == 0 && police_force_available > 0){
+        allocated_staff = police_force_available;
+      }
+      police_on_events[marker_counter]=allocated_staff;
+      police_force_available -= allocated_staff;
+      console.log(allocated_staff);
+      console.log("police force available:" +police_force_available);
+      console.log(police_on_events);
+      $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
+>>>>>>> ddcd61936c80f9abb112010bf5c39f273e968fa6
       marker_counter++;
     }
    initialize();
 
-  var i=-1;
+  var i=0;
   setInterval(function(){
-    var LatLng1 = new google.maps.LatLng(parseFloat(data[i++].lat),parseFloat(data[i++].lon));
-    addMarker(LatLng1);
+    var LatLng1 = new google.maps.LatLng(parseFloat(data[i].lat),parseFloat(data[i].lon));
+    var eventClass = eventsObj[data[i].crime];
+    console.log(eventClass);
+    i++;
+    addMarker(LatLng1,eventClass);
   },2000);
   });
 </script>
