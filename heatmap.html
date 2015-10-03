@@ -25,7 +25,16 @@
   line-height: 30px;
   padding-left: 10px;
 }
+.axis {
+	  font: 10px sans-serif;
+	}
 
+	.axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
 
     </style>
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -46,8 +55,9 @@
     <div id="map"></div>
     <div class="container">
       <div class="row">
-    <div class=".col-xs-8 .col-md-8" id="pie">
 
+    <div class=".col-xs-8 .col-md-8" id="pie">
+      <h3>Incident Distribution</h3>
       </div>
       <div class=".col-xs-4 .col-md-4">
 
@@ -92,30 +102,37 @@ function initMap() {
   });
 
   d3.csv("CityEvents.csv", function(error, data) {
-
+      var low_num =0;
+        var  med_num= 0;
+        var  high_num=0;
+        var  vhigh_num=0;
       low_crimes=data.filter(function(d){
         return eventsObj[d.crime].priority == LOW;
       }).map(function(d){
+        low_num+=parseInt(d.people);
         return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
       });
       vhigh_crimes=data.filter(function(d){
         return eventsObj[d.crime].priority == VHIGH;
       }).map(function(d){
+        med_num+=parseInt(d.people);
         return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
       });
       high_crimes=data.filter(function(d){
         return eventsObj[d.crime].priority == HIGH;
       }).map(function(d){
+        high_num+=parseInt(d.people);
         return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
       });
       medium_crimes=data.filter(function(d){
         return eventsObj[d.crime].priority == MEDIUM;
       }).map(function(d){
+        vhigh_num+=parseInt(d.people);
         return new google.maps.LatLng(parseFloat(d.lat),parseFloat(d.lon))
       });
       heatmap.setData(vhigh_crimes);
 
-
+      console.log(low_num);
       var width = 700,
           height = 400,
           radius = Math.min(width, height) / 2;
@@ -139,18 +156,18 @@ function initMap() {
 
 
        var dataCrimes = [{
-                 name: "Low Crimes",
+                 name: "Low Risk",
                 rate: low_crimes.length
               },{
-                name:"Medium Crimes",
+                name:"Medium Risk",
                 rate : medium_crimes.length
               },
               {
-                name:"High Crimes",
+                name:"High Risk",
                 rate: high_crimes.length
               },
               {
-                name:"Very High Crimes",
+                name:"Very High Risk",
                 rate:vhigh_crimes.length
               }];
 
@@ -168,6 +185,78 @@ function initMap() {
             .attr("dy", ".35em")
             .style("text-anchor", "middle")
             .text(function(d) { return d.data.name; });
+
+
+      var margin = {top: 20, right: 20, bottom: 70, left: 40};
+      var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+      var y = d3.scale.linear().range([height, 0]);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .ticks(10);
+
+      var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+        var peopleAffected = [{
+          risk: "Very High",
+          num : vhigh_num
+        },
+        {
+          risk:"High",
+          num: high_num
+        },
+        {
+          risk:"Medium",
+          num: med_num
+        },
+        {
+          risk:"Low",
+          num:low_num
+        }];
+        x.domain(["Very High","High","Medium","Low"]);
+        y.domain([0, d3.max(peopleAffected, function(d) { return d.num / 1000; })]);
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+          .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", "-.55em")
+            .attr("transform", "rotate(-90)" );
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Number of people (1000)");
+
+        svg.selectAll("bar")
+            .data(peopleAffected)
+          .enter().append("rect")
+            .style("fill", "steelblue")
+            .attr("x", function(d) { return x(d.risk); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.num/1000); })
+            .attr("height", function(d) { return height - y(d.num/1000); });
+
+
 
     });
 }
