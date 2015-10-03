@@ -59,7 +59,14 @@ var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' 
             map: map,
             animation: google.maps.Animation.DROP
           });
+          markers[i].info = new google.maps.InfoWindow({
+            content: "<p>Available staff: 1000 </p>" + "<p>Staff at the event: 10 </p>" + "<p>Staff required: 10 </p>"
+          });
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 785938f7218d9baaa3849e419693b6b96c15c78b
 
 
     }
@@ -69,7 +76,12 @@ var content = '<p>Available staff: 1000 </p>' +'<p>Staff at the event: 10 </p>' 
         marker_counter = 0;
       }
       markers[marker_counter].setPosition(LatLng);
+<<<<<<< HEAD
       markers[marker_counter].setIcon('low.png');
+=======
+      markers[marker_counter].setIcon('high.png');
+      markers[marker_counter].info.open(map,markers[marker_counter]);
+>>>>>>> 785938f7218d9baaa3849e419693b6b96c15c78b
       marker_counter++;
     }
    initialize();
