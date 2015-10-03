@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js\jquery-2.1.4.js"></script>
 <title>Vis</title>
 
 <head>
@@ -81,8 +82,10 @@ var map;
 var markers = [];
 var marker_counter=0;
 
+
 var police_force_available = 200;
 var police_on_events=[0,0,0,0,0,0,0];
+
 
   d3.csv("CityEvents.csv", function(error, data) {
     function initialize() {
@@ -93,7 +96,7 @@ var police_on_events=[0,0,0,0,0,0,0];
         map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
 
-        infowindow = new google.maps.InfoWindow();
+        var info = new google.maps.InfoWindow();
         var MAX_EVENTS = 7;
         for (var i=0; i<MAX_EVENTS; i++){
           markers[i] = new google.maps.Marker({
@@ -124,7 +127,6 @@ var police_on_events=[0,0,0,0,0,0,0];
         case 4: icon = 'low.png';break;
       }
       markers[marker_counter].setPosition(LatLng);
-
       markers[marker_counter].setIcon(icon);
       //Calculate how much police force is needed
       var allocated_staff = Math.floor(police_force_available / POLICE_FORCE * eventClass.ratio);
@@ -138,6 +140,7 @@ var police_on_events=[0,0,0,0,0,0,0];
       console.log("police force available:" +police_force_available);
       console.log(police_on_events);
       $("#floating-panel").text('Police Force Available: '+ police_force_available +"/"+POLICE_FORCE);
+
       marker_counter++;
     }
    initialize();
@@ -153,4 +156,5 @@ var police_on_events=[0,0,0,0,0,0,0];
 
   });
 </script>
+  <div class=".col-md-4"></div>
 </body>
